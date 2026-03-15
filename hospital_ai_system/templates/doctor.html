@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Doctor Portal • Anushakti MedAI</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script defer src="/static/ui.js"></script>
+  <script defer src="/static/doctor.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section class="shell">
+      <div class="topRow">
+        <div class="pageTitle">
+          <div class="title">Doctor Portal</div>
+          <div class="subtitle">Manage assigned appointments</div>
+        </div>
+        <div class="topActions">
+          <button class="btn btn-secondary" id="dashBtn" type="button">Refresh</button>
+          <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="notice" id="mustLoginNotice" style="display:none;"></div>
+
+      <section class="grid one">
+        <div class="card">
+          <div id="dashCards" class="cards"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Appointment modal -->
+  <div class="modalOverlay" id="patientModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="patientModalTitle">
+      <div class="modalTop">
+        <div>
+          <div class="modalTitle" id="patientModalTitle">Appointment Details</div>
+          <div class="muted small" id="patientModalSub"></div>
+        </div>
+        <button class="iconBtn" id="closePatientModalBtn" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modalGrid">
+        <div class="panel">
+          <div class="panelTitle">Symptoms</div>
+          <div class="panelBody note" id="patientDetailOut"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panelTitle">Update values</div>
+          <div class="panelBody">
+            <form id="updateApptForm" class="form">
+              <input type="hidden" id="upd_appointment_id" />
+              <label class="field"><span>Department</span><input id="upd_department" required minlength="2" maxlength="80"></label>
+
+              <div class="row">
+                <label class="field" style="flex:1;"><span>Queue position</span><input id="upd_queue_position" type="number" min="1" step="1" required></label>
+                <label class="field" style="flex:1;"><span>Predicted wait</span><input id="upd_predicted_wait_minutes" type="number" min="0" step="1" required></label>
+              </div>
+
+              <div class="row">
+                <label class="field" style="flex:1;"><span>Severity (1-10)</span><input id="upd_severity" type="number" min="1" max="10" step="1" required></label>
+                <label class="field" style="flex:1;">
+                  <span>Priority</span>
+                  <select id="upd_priority" required>
+                    <option>Low</option><option>Medium</option><option>High</option><option>Emergency</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="row row-space">
+                <label class="check"><input type="checkbox" id="completeCheckbox"><span>Mark Completed</span></label>
+                <button class="btn btn-secondary" type="submit" id="saveBtn">Save</button>
+              </div>
+            </form>
+            <div class="note" id="updateOut"></div>
+          </div>
+        </div>
+
+        <div class="panel span2">
+          <div class="panelTitle">Reassign doctor (manual)</div>
+          <div class="panelBody">
+            <form id="manualReassignForm" class="form">
+              <input type="hidden" id="mr_appointment_id" />
+              <label class="field"><span>Select doctor</span><select id="mr_doctor_id" required></select></label>
+              <div class="row row-space">
+                <div class="muted small">Only active doctors are listed.</div>
+                <button class="btn btn-secondary" type="submit">Reassign</button>
+              </div>
+            </form>
+            <div class="note" id="manualReassignOut"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modalFooter">
+        <button class="btn btn-ghost" id="closePatientModalBtn2" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

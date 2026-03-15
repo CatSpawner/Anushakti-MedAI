@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ app_name }}</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script defer src="/static/ui.js"></script>
+  <script defer src="/static/home.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section class="shell">
+      <div class="topRow">
+        <div class="brand">
+          <div class="logo">AM</div>
+          <div>
+            <div class="title">Anushakti MedAI</div>
+            <div class="subtitle">Smart Triage & OPD Workflow</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="authLayout">
+        <div class="authLeft">
+          <div class="card heroCard">
+            <div class="heroTag">Secure cookie-based portal</div>
+            <h1 class="heroTitle">Welcome</h1>
+            <p class="heroText">
+              Login as Patient, Doctor, or Admin. Admin can manage doctors, review appointments, and audit actions.
+            </p>
+
+            <div class="heroPoints">
+              <div class="heroPoint">
+                <div class="hpDot"></div>
+                <div>
+                  <div class="hpTitle">AI → ML → Rules triage</div>
+                  <div class="hpText">Robust fallbacks when AI is unavailable.</div>
+                </div>
+              </div>
+
+              <div class="heroPoint">
+                <div class="hpDot hpDotWarn"></div>
+                <div>
+                  <div class="hpTitle">Emergency warning</div>
+                  <div class="hpText">For severe symptoms, seek emergency care immediately.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="footer">
+              <div class="muted small">Optimized for mobile • scales beautifully on desktop</div>
+              <div class="muted small mono">Anushakti MedAI</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="authRight">
+          <div class="card cardGlow">
+            <div class="row row-space">
+              <div>
+                <div class="title" style="font-size:18px;">Login</div>
+                <div class="subtitle">Select role and enter credentials.</div>
+              </div>
+            </div>
+
+            <div class="segmented" role="tablist" aria-label="Role selection">
+              <button type="button" class="seg-btn active" id="patientToggle">Patient</button>
+              <button type="button" class="seg-btn" id="doctorToggle">Doctor</button>
+              <button type="button" class="seg-btn" id="adminToggle">Admin</button>
+            </div>
+
+            <form id="loginForm" class="form" style="margin-top: 12px;">
+              <input type="hidden" name="role" id="roleField" value="patient" />
+
+              <label class="field">
+                <span>Username</span>
+                <input name="username" required minlength="3" maxlength="120" autocomplete="username" />
+              </label>
+
+              <label class="field">
+                <span>Password</span>
+                <input name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password" />
+              </label>
+
+              <div class="row row-space">
+                <button class="btn" type="submit" id="loginBtn">Login</button>
+                <button class="btn btn-ghost" id="openRegisterBtn" type="button">Patient Registration</button>
+              </div>
+            </form>
+
+            <div class="note" id="loginOut"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Patient registration modal -->
+  <div class="modalOverlay" id="registerModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="registerTitle">
+      <div class="modalTop">
+        <div>
+          <div class="modalTitle" id="registerTitle">Patient Registration</div>
+          <div class="muted small">Create a patient account.</div>
+        </div>
+        <button class="iconBtn" id="closeRegisterBtn" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modalGrid">
+        <div class="panel span2">
+          <div class="panelTitle">Create account</div>
+          <div class="panelBody">
+            <form id="registerForm" class="form">
+              <label class="field"><span>Full name</span><input name="full_name" required minlength="2" maxlength="200"></label>
+              <label class="field"><span>Username</span><input name="username" required minlength="3" maxlength="120"></label>
+              <label class="field"><span>Password</span><input name="password" type="password" required minlength="8" maxlength="128"></label>
+
+              <div class="row row-space">
+                <div class="muted small">Auto login after registration.</div>
+                <div class="row">
+                  <button class="btn btn-secondary" id="registerBtn" type="submit">Create</button>
+                  <button class="btn btn-ghost" id="cancelRegisterBtn" type="button">Cancel</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="note" id="registerOut"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

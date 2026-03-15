@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Patient Portal • Anushakti MedAI</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script defer src="/static/ui.js"></script>
+  <script defer src="/static/patient.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section class="shell">
+      <div class="topRow">
+        <div class="pageTitle">
+          <div class="title">Patient Portal</div>
+          <div class="subtitle">Submit symptoms and track queue status</div>
+        </div>
+        <div class="topActions">
+          <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="notice" id="mustLoginNotice" style="display:none;"></div>
+
+      <section class="grid two">
+        <div class="card">
+          <h2>Submit Symptoms</h2>
+          <form id="submitForm" class="form">
+            <label class="field"><span>Your name</span><input name="name" required minlength="2" maxlength="200" placeholder="e.g., Aditi Sharma"></label>
+            <label class="field"><span>Symptoms</span><textarea name="symptoms" rows="7" required minlength="3" maxlength="5000" placeholder="Describe symptoms briefly..."></textarea></label>
+            <div class="row">
+              <button class="btn" type="submit" id="submitBtn">Submit</button>
+              <button class="btn btn-secondary" id="dashBtn" type="button">Refresh status</button>
+            </div>
+          </form>
+          <div class="note" id="submitOut"></div>
+        </div>
+
+        <div class="card">
+          <h2>Your Status</h2>
+          <div class="tip" id="patientTip"></div>
+          <div id="dashCards" class="cards"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

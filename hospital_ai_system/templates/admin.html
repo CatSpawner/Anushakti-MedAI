@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Portal • Anushakti MedAI</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+
+  <!-- IMPORTANT: ui.js MUST be before admin.js -->
+  <script defer src="/static/ui.js"></script>
+  <script defer src="/static/admin.js"></script>
+</head>
+<body>
+  <main class="container">
+    <section class="shell">
+      <div class="topRow">
+        <div class="pageTitle">
+          <div class="title">Admin Portal</div>
+          <div class="subtitle">Manage doctors • View full system data • Reassign patients</div>
+        </div>
+        <div class="topActions">
+          <button class="btn btn-secondary" id="refreshBtn" type="button">Refresh</button>
+          <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="notice" id="mustLoginNotice" style="display:none;"></div>
+
+      <section class="grid one">
+        <div class="card">
+          <div class="row row-space" style="margin-bottom:10px;">
+            <h2 style="margin:0;">Doctors</h2>
+            <div class="muted small">
+              Tap a doctor card → details + assigned patients. Last card → Add Doctor.
+            </div>
+          </div>
+
+          <div id="doctorGrid" class="doctorGrid"></div>
+
+          <div class="note" id="adminDoctorsOut" style="display:none;"></div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="row row-space">
+              <h2 style="margin:0;">All Appointments (latest 500)</h2>
+              <button class="btn btn-secondary" id="loadAppointmentsBtn" type="button">Load</button>
+            </div>
+            <div id="appointmentsOut" class="tableWrap"></div>
+          </div>
+
+          <div class="card">
+            <div class="row row-space">
+              <h2 style="margin:0;">Audit Log</h2>
+              <button class="btn btn-secondary" id="loadAuditBtn" type="button">Load</button>
+            </div>
+            <div id="auditOut" class="auditList"></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Doctor details modal -->
+  <div class="modalOverlay" id="adminDoctorModal" aria-hidden="true">
+    <div class="modal modalWide" role="dialog" aria-modal="true" aria-labelledby="adminDoctorModalTitle">
+      <div class="modalTop adminModalTop">
+        <div>
+          <div class="modalTitle" id="adminDoctorModalTitle">Doctor Details</div>
+          <div class="small" id="adminDoctorModalSub"></div>
+        </div>
+        <button class="iconBtn" id="closeAdminDoctorModalBtn" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="modalGrid">
+        <div class="panel">
+          <div class="panelTitle">Doctor Info & Actions</div>
+          <div class="panelBody">
+            <div id="docInfoBox" class="kvbox"></div>
+
+            <hr class="sep" />
+
+            <form id="docUpdateForm" class="form">
+              <input type="hidden" id="doc_id_update" />
+              <label class="field"><span>Full name</span><input id="doc_full_name" required minlength="2" maxlength="200"></label>
+              <label class="field"><span>Department</span><input id="doc_department" required minlength="2" maxlength="80"></label>
+              <div class="row row-space">
+                <div class="muted small">Update doctor details</div>
+                <button class="btn btn-secondary" id="docSaveBtn" type="submit">Save</button>
+              </div>
+            </form>
+
+            <hr class="sep" />
+
+            <form id="docPasswordForm" class="form">
+              <input type="hidden" id="doc_id_password" />
+              <label class="field"><span>New password</span><input id="doc_new_password" type="password" required minlength="8" maxlength="128"></label>
+              <div class="row row-space">
+                <div class="muted small">Reset doctor password</div>
+                <button class="btn btn-secondary" id="docPwdBtn" type="submit">Update</button>
+              </div>
+            </form>
+
+            <hr class="sep" />
+
+            <div class="row row-space">
+              <div class="muted small">Deactivate doctor disables login (history remains).</div>
+              <button class="btn btn-danger" id="deactivateDoctorBtn" type="button">Deactivate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel span2">
+          <div class="panelTitle">Assigned Patients / Appointments</div>
+          <div class="panelBody">
+            <div class="muted small" style="margin-bottom:10px;">
+              Tap a row to select it, then choose a new doctor to reassign.
+            </div>
+
+            <div id="doctorAppointmentsTable" class="tableWrap"></div>
+
+            <div class="reassignBar">
+              <div class="muted small" id="reassignHint">No appointment selected.</div>
+              <div class="row">
+                <select id="reassignDoctorSelect"></select>
+                <button class="btn btn-secondary" id="reassignBtn" type="button" disabled>Reassign</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modalFooter">
+        <button class="btn btn-ghost" id="closeAdminDoctorModalBtn2" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add doctor modal -->
+  <div class="modalOverlay" id="addDoctorModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addDoctorModalTitle">
+      <div class="modalTop adminModalTop">
+        <div>
+          <div class="modalTitle" id="addDoctorModalTitle">Add Doctor</div>
+          <div class="muted small">Admin sets username, password, name, department</div>
+        </div>
+        <button class="iconBtn" id="closeAddDoctorModalBtn" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="panel">
+        <div class="panelBody">
+          <form id="addDoctorForm" class="form">
+            <label class="field"><span>Username</span><input id="add_username" required minlength="3" maxlength="120"></label>
+            <label class="field"><span>Password</span><input id="add_password" type="password" required minlength="8" maxlength="128"></label>
+            <label class="field"><span>Full name</span><input id="add_full_name" required minlength="2" maxlength="200"></label>
+            <label class="field"><span>Department</span><input id="add_department" required minlength="2" maxlength="80"></label>
+
+            <div class="row row-space">
+              <div class="muted small">Doctor is active by default.</div>
+              <button class="btn btn-secondary" id="addDoctorBtn" type="submit">Create</button>
+            </div>
+          </form>
+
+          <div class="note" id="addDoctorOut"></div>
+        </div>
+      </div>
+
+      <div class="modalFooter">
+        <button class="btn btn-ghost" id="closeAddDoctorModalBtn2" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
